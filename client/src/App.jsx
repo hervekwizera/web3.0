@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Loader,Navbar,Services,Transactions,Welcome } from "./components";
 
 const App = () => {
  
