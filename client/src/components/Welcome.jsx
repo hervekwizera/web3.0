@@ -1,6 +1,5 @@
 
-
-function Welcome() {
+const Welcome = ()=> {
   return (
     <div>Welcome</div>
   )

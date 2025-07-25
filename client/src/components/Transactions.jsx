@@ -1,6 +1,4 @@
-
-
-function Transactions() {
+const Transactions = ()=> {
   return (
     <div>Transactions</div>
   )
