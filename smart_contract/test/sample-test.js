@@ -1,19 +1,38 @@
 const { expect } = require("chai");
-const { ethers } = require("hardhat");
 
-describe("Greeter", function () {
-  it("Should return the new greeting once it's changed", async function () {
-    const Greeter = await ethers.getContractFactory("Greeter");
-    const greeter = await Greeter.deploy("Hello, world!");
-    await greeter.deployed();
+describe("Transactions Contract", function () {
+  let Transactions;
+  let transactions;
+  let owner;
+  let addr1;
 
-    expect(await greeter.greet()).to.equal("Hello, world!");
+  beforeEach(async function () {
+    Transactions = await ethers.getContractFactory("Transactions");
+    [owner, addr1] = await ethers.getSigners();
+    transactions = await Transactions.deploy();
+    await transactions.deployed();
+  });
 
-    const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
+  it("Should start with zero transaction count", async function () {
+    expect(await transactions.getTransactionCount()).to.equal(0);
+  });
 
-    // wait until the transaction is mined
-    await setGreetingTx.wait();
+  it("Should add a transaction to the blockchain", async function () {
+    const amount = ethers.utils.parseEther("1.0"); // 1 ETH
+    const message = "Hello Blockchain";
+    const keyword = "Test";
 
-    expect(await greeter.greet()).to.equal("Hola, mundo!");
+    const tx = await transactions.addToBlockchain(addr1.address, amount, message, keyword);
+    await tx.wait();
+
+    expect(await transactions.getTransactionCount()).to.equal(1);
+
+    const allTx = await transactions.getAllTransactions();
+    expect(allTx.length).to.equal(1);
+    expect(allTx[0].sender).to.equal(owner.address);
+    expect(allTx[0].receiver).to.equal(addr1.address);
+    expect(allTx[0].amount.toString()).to.equal(amount.toString());
+    expect(allTx[0].message).to.equal(message);
+    expect(allTx[0].keyword).to.equal(keyword);
   });
 });
