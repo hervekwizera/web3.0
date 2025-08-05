@@ -8,7 +8,11 @@ export const TransactionContext = React.createContext();
 
 const {ethereum} = window;
 
-const getEthereumContract = ()=>{
+
+
+export const TransactionProvider = ({children}) => {
+    const [connectedAccount,setConnectedAccount]= useState(' ')
+    const getEthereumContract = ()=>{
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
     const transactionContract = new ethers.Contract(contractAddress,contractABI,signer);
@@ -20,9 +24,34 @@ const getEthereumContract = ()=>{
     });
 }
 
-export const TransactionProvider = ({children}) => {
+const checkIfWalletIsConnected = async () =>{
+    if (!ethereum) return alert("Please install metamask");
+
+    const accounts = await ethereum.request({methode: 'eth_requestAccounts'});
+    
+    console.log(accounts);
+    
+}
+
+const connectWallet = async () => {
+    try {
+         if (!ethereum) return alert("Please install metamask");
+         const accounts = await ethereum.request({methode: 'eth_requestAccounts'});
+         setCurrentAccount(accounts[0]);
+    } catch (error) {
+        console.log(error);
+
+        throw new Error("no ethereum object .")
+        
+    }
+}
+    useEffect(() => {
+      checkIfWalletIsConnected();
+    }, [])
+        
+
     return (
-        <TransactionContext.Provider value={{value: 'test'}}>
+        <TransactionContext.Provider value={{connectWallet}}>
             {children}
         </TransactionContext.Provider>
 
