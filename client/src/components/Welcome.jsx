@@ -1,8 +1,8 @@
-// import React, { useContext } from "react";
+import React, { useContext } from "react";
 import { AiFillPlayCircle } from "react-icons/ai";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
-
+import {TransactionContext} from '../context/TransactionContext'
 import { Loader } from ".";
 
 const companyCommonStyles =
@@ -21,18 +21,12 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 );
  
 const Welcome = () => {
+
   
-  // ✅ Destructuring values and functions from TransactionContext using useContext hook
-  /*
-  const {
-    currentAccount,
-    connectWallet,
-    handleChange,
-    sendTransaction,
-    formData,
-    isLoading
-  } = useContext(TransactionContext);
-  */
+ const {value} = useContext(TransactionContext)
+
+ console.log(value);
+ 
   
   const handleSubmit = () => {
   
