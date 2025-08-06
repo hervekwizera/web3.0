@@ -27,7 +27,7 @@ export const TransactionProvider = ({children}) => {
 const checkIfWalletIsConnected = async () =>{
     if (!ethereum) return alert("Please install metamask");
 
-    const accounts = await ethereum.request({methode: 'eth_requestAccounts'});
+    const accounts = await ethereum.request({method: 'eth_requestAccounts'});
     
     console.log(accounts);
     
@@ -36,7 +36,7 @@ const checkIfWalletIsConnected = async () =>{
 const connectWallet = async () => {
     try {
          if (!ethereum) return alert("Please install metamask");
-         const accounts = await ethereum.request({methode: 'eth_requestAccounts'});
+         const accounts = await ethereum.request({method: 'eth_requestAccounts'});
          setCurrentAccount(accounts[0]);
     } catch (error) {
         console.log(error);
