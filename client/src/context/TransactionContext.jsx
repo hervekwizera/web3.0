@@ -8,11 +8,7 @@ export const TransactionContext = React.createContext();
 
 const {ethereum} = window;
 
-
-
-export const TransactionProvider = ({children}) => {
-    const [connectedAccount,setConnectedAccount]= useState(' ')
-    const getEthereumContract = ()=>{
+const getEthereumContract = ()=>{
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
     const transactionContract = new ethers.Contract(contractAddress,contractABI,signer);
@@ -23,6 +19,11 @@ export const TransactionProvider = ({children}) => {
         transactionContract
     });
 }
+
+
+
+export const TransactionProvider = ({children}) => {
+    const [connectedAccount,setConnectedAccount]= useState(' ')
 
 const checkIfWalletIsConnected = async () =>{
     if (!ethereum) return alert("Please install metamask");
