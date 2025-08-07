@@ -64,6 +64,17 @@ const connectWallet = async () => {
         
     }
 }
+
+  const sendTransaction = async () => {
+    try {
+        if(!ethereum) return alert("Please install metamask");
+    } catch (error) {
+        
+        console.log(error);
+        throw new Error("no ethereum object .")
+        
+    }
+  }
     useEffect(() => {
       checkIfWalletIsConnected();
     }, [])
