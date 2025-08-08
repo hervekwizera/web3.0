@@ -24,6 +24,11 @@ const getEthereumContract = ()=>{
 
 export const TransactionProvider = ({children}) => {
     const [currentAccount,setCurrentAccount]= useState('')
+    const [formData,setFormData] = useState({addressTo:'',amout:'',keyword:'',message:''});
+
+    const handleChange = (e,name)=>{
+        setFormData((prevState)=>({...prevState,[name]:e.target.value}));
+    }
 
 const checkIfWalletIsConnected = async () =>{
 
