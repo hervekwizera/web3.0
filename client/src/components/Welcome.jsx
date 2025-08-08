@@ -23,7 +23,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 const Welcome = () => {
 
   
- const {connectWallet,currentAccount} = useContext(TransactionContext)
+ const {connectWallet,currentAccount,formData,setFormData,handleChange} = useContext(TransactionContext)
 
  
  
@@ -33,9 +33,7 @@ const Welcome = () => {
   };
 
   
-  const handleChange = () => {
   
-  };
 
   return (
     <div className="flex w-full justify-center items-center">
