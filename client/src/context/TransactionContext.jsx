@@ -86,7 +86,7 @@ const connectWallet = async () => {
         
 
     return (
-        <TransactionContext.Provider value={{connectWallet,currentAccount}}>
+        <TransactionContext.Provider value={{connectWallet,currentAccount,formData,setFormData,handleChange}}>
             {children}
         </TransactionContext.Provider>
 
