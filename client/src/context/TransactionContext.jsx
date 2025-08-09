@@ -29,6 +29,7 @@ const getEthereumContract = async () => {
     signer,
     transactionContract,
   });
+console.log("Contract address:", transactionContract.target);
 
   return transactionContract;
 };
