@@ -31,6 +31,9 @@ export const TransactionProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [transactionCount, setTransactionCount] = useState(localStorage.getItem("transactionCount") || 0);
 
+  // ✅ Transactions state initialized as an empty array
+  const [transactions, setTransactions] = useState([]);
+
   const handleChange = (e, name) => {
     setFormData((prevState) => ({ ...prevState, [name]: e.target.value }));
   };
@@ -42,6 +45,7 @@ export const TransactionProvider = ({ children }) => {
 
       if (accounts.length) {
         setCurrentAccount(accounts[0]);
+        await getAllTransactions();
       } else {
         console.log("No accounts found");
       }
@@ -56,9 +60,34 @@ export const TransactionProvider = ({ children }) => {
       if (!ethereum) return alert("Please install MetaMask");
       const accounts = await ethereum.request({ method: "eth_requestAccounts" });
       setCurrentAccount(accounts[0]);
+      await getAllTransactions();
     } catch (error) {
       console.error(error);
       throw new Error("No ethereum object.");
+    }
+  };
+
+  // ✅ Fetch all past transactions
+  const getAllTransactions = async () => {
+    try {
+      if (!ethereum) return alert("Please install MetaMask");
+      const transactionContract = await getEthereumContract();
+      if (!transactionContract) return;
+
+      const availableTransactions = await transactionContract.getAllTransactions();
+
+      const structuredTransactions = availableTransactions.map((tx) => ({
+        addressTo: tx.receiver,
+        addressFrom: tx.sender,
+        timestamp: new Date(Number(tx.timestamp) * 1000).toLocaleString(),
+        message: tx.message,
+        keyword: tx.keyword,
+        amount: Number(tx.amount) / 1e18, // Convert Wei to ETH
+      }));
+
+      setTransactions(structuredTransactions);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
     }
   };
 
@@ -72,7 +101,6 @@ export const TransactionProvider = ({ children }) => {
 
       const parsedAmount = ethers.parseEther(amount);
 
-      // Send ETH via MetaMask
       await ethereum.request({
         method: "eth_sendTransaction",
         params: [{
@@ -83,7 +111,6 @@ export const TransactionProvider = ({ children }) => {
         }],
       });
 
-      // Call smart contract function
       const transactionHash = await transactionContract.addToBlockchain(
         addressTo,
         parsedAmount,
@@ -101,7 +128,8 @@ export const TransactionProvider = ({ children }) => {
       setTransactionCount(transactionsCount.toString());
       localStorage.setItem("transactionCount", transactionsCount.toString());
 
-      // Clear form
+      await getAllTransactions();
+
       setFormData({ addressTo: "", amount: "", keyword: "", message: "" });
     } catch (error) {
       console.error(error);
@@ -124,6 +152,7 @@ export const TransactionProvider = ({ children }) => {
         sendTransaction,
         isLoading,
         transactionCount,
+        transactions, // ✅ Now provided
       }}
     >
       {children}
